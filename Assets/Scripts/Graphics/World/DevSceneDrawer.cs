@@ -909,24 +909,30 @@ namespace DLS.Graphics
 
 			int skip = cam.orthographicSize < 8 ? 1 : cam.orthographicSize < 32 ? 4 : 16;
 
-			for (float px = left; px < right; px += GridSize)
-			{
-				int xInt = Mathf.RoundToInt(px / GridSize);
-				if (xInt % skip == 0)
-				{
-					Draw.Line(new Vector2(px, bottom), new Vector2(px, top), thickness, gridCol);
-				}
-			}
+Color gridColMajor = new Color(1f, 1f, 1f, 0.25f);
+Color gridColMinor = new Color(0.3f, 0.5f, 1f, 0.2f);
 
-			for (float py = bottom; py < top; py += GridSize)
-			{
-				int yInt = Mathf.RoundToInt(py / GridSize);
-				if (yInt % skip == 0)
-				{
-					Draw.Line(new Vector2(left, py), new Vector2(right, py), thickness, gridCol);
-				}
-			}
+for (float px = left; px < right; px += GridSize)
+{
+    int xInt = Mathf.RoundToInt(px / GridSize);
+    if (xInt % skip == 0)
+    {
+        Color col = (xInt % 10 == 0) ? gridColMajor : (xInt % 5 == 0) ? gridColMinor : gridCol;
+        float t = (xInt % 10 == 0) ? thickness * 2f : (xInt % 5 == 0) ? thickness * 1.4f : thickness;
+        Draw.Line(new Vector2(px, bottom), new Vector2(px, top), t, col);
+    }
+}
 
+for (float py = bottom; py < top; py += GridSize)
+{
+    int yInt = Mathf.RoundToInt(py / GridSize);
+    if (yInt % skip == 0)
+    {
+        Color col = (yInt % 10 == 0) ? gridColMajor : (yInt % 5 == 0) ? gridColMinor : gridCol;
+        float t = (yInt % 10 == 0) ? thickness * 2f : (yInt % 5 == 0) ? thickness * 1.4f : thickness;
+        Draw.Line(new Vector2(left, py), new Vector2(right, py), t, col);
+    }
+}
 			return;
 
 			static float ToGrid(float v, float gridSize)
