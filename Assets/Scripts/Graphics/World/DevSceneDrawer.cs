@@ -908,7 +908,7 @@ namespace DLS.Graphics
 			float bottom = ToGrid(-screenHalfHeight + worldCentre.y, GridSize) - GridSize;
 
 			int skip = cam.orthographicSize < 8 ? 1 : cam.orthographicSize < 32 ? 4 : 16;
-
+// THE NEW GRID LINES _________________________________________________________________________________________________________________________________________________________________________________________ //
 Color gridColMajor = new Color(1f, 1f, 1f, 0.25f);
 Color gridColMinor = new Color(0.3f, 0.5f, 1f, 0.2f);
 
