@@ -922,7 +922,7 @@ for (float px = left; px < right; px += GridSize)
         Draw.Line(new Vector2(px, bottom), new Vector2(px, top), t, col);
     }
 }
-
+ 
 for (float py = bottom; py < top; py += GridSize)
 {
     int yInt = Mathf.RoundToInt(py / GridSize);
