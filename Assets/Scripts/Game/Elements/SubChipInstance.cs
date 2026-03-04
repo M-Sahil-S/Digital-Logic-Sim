@@ -164,19 +164,19 @@ namespace DLS.Game
 			}
 
 
-// ---- Second pass: snap each pin to nearest grid position ----
-float spaceRemaining = Size.y - info.chipHeight;
+			// ---- Second pass: snap each pin to nearest grid position ----
+			float spaceRemaining = Size.y - info.chipHeight;
 
-if (spaceRemaining > 0)
-{
-    float spacingBetweenPins = spaceRemaining / (pins.Length - 1);
-    for (int i = 1; i < pins.Length; i++)
-    {
-        float rawY = pins[i].LocalPosY - spacingBetweenPins * i;
-        // Snap to nearest grid line
-        pins[i].LocalPosY = Mathf.Round(rawY / DrawSettings.GridSize) * DrawSettings.GridSize;
-    }
-}
+			if (spaceRemaining > 0)
+			{
+				float spacingBetweenPins = spaceRemaining / (pins.Length - 1);
+				for (int i = 1; i < pins.Length; i++)
+				{
+					float rawY = pins[i].LocalPosY - spacingBetweenPins * i;
+					pins[i].LocalPosY = Mathf.Round(rawY / DrawSettings.GridSize) * DrawSettings.GridSize;
+				}
+			}
+		}
 
 		// Min chip height based on input and output pins
 		public static float MinChipHeightForPins(PinDescription[] inputs, PinDescription[] outputs) => Mathf.Max(MinChipHeightForPins(inputs), MinChipHeightForPins(outputs));
