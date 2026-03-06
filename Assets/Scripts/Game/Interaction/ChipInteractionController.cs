@@ -207,6 +207,8 @@ namespace DLS.Game
 				}
 			}
 
+
+			
 			if (KeyboardShortcuts.ImportChipContentsShortcutTriggered)
 			{
 				if (SelectedElements.Count == 1 && SelectedElements[0] is SubChipInstance selectedSubChip && !IsPlacingOrMovingElementOrCreatingWire)
