@@ -992,6 +992,74 @@ namespace DLS.Game
 			return element;
 		}
 
+		void ImportChipContents(SubChipInstance sourceChip)
+		{
+    		ChipDescription sourceDesc = sourceChip.Description;
+    		if (sourceDesc.SubChips == null || sourceDesc.SubChips.Length == 0) return;
+
+    		// Calculate offset so imported contents appear to the right of the selected chip
+    		Vector2 importOffset = sourceChip.Position + Vector2.right * (sourceChip.Size.x + 2f);
+
+    		// Build ID remap table to avoid conflicts
+    		Dictionary<int, int> idRemap = new();
+    		foreach (SubChipDescription subDesc in sourceDesc.SubChips)
+    		{
+        		int newID = IDGenerator.GenerateNewElementID(ActiveDevChip);
+        		idRemap[subDesc.ID] = newID;
+    		}
+
+    		// Place all subchips from source chip's internals
+    		List<IMoveable> importedElements = new();
+    		foreach (SubChipDescription subDesc in sourceDesc.SubChips)
+    		{
+        		if (!project.chipLibrary.TryGetChipDescription(subDesc.Name, out ChipDescription subChipFullDesc)) continue;
+
+        		SubChipDescription remapped = new()
+        		{
+            		Name = subDesc.Name,
+            		ID = idRemap[subDesc.ID],
+            		Position = subDesc.Position + importOffset,
+            		Label = subDesc.Label,
+            		InternalData = subDesc.InternalData,
+            		OutputPinColourInfo = subDesc.OutputPinColourInfo
+        		};
+
+        		SubChipInstance newSubChip = new(subChipFullDesc, remapped);
+        		ActiveDevChip.AddNewSubChip(newSubChip, false);
+        		importedElements.Add(newSubChip);
+    		}
+
+    		// Recreate wires with remapped IDs
+    		if (sourceDesc.Wires != null)
+    		{
+        		WireInstance[] loadedWires = new WireInstance[sourceDesc.Wires.Length];
+        		for (int i = 0; i < sourceDesc.Wires.Length; i++)
+        		{
+            		WireDescription wireDesc = sourceDesc.Wires[i];
+
+            		// Remap pin owner IDs
+            		PinAddress remappedSource = new(idRemap.GetValueOrDefault(wireDesc.SourcePinAddress.PinOwnerID, wireDesc.SourcePinAddress.PinOwnerID), wireDesc.SourcePinAddress.PinID);
+            		PinAddress remappedTarget = new(idRemap.GetValueOrDefault(wireDesc.TargetPinAddress.PinOwnerID, wireDesc.TargetPinAddress.PinOwnerID), wireDesc.TargetPinAddress.PinID);
+		
+            		if (!DevChipInstance.TryFindPin(importedElements, remappedSource, out PinInstance sourcePin)) continue;
+            		if (!DevChipInstance.TryFindPin(importedElements, remappedTarget, out PinInstance targetPin)) continue;
+
+            		// Offset wire points
+            		Vector2[] points = new Vector2[wireDesc.Points.Length];
+            		for (int j = 0; j < points.Length; j++)
+                		points[j] = wireDesc.Points[j] + importOffset;
+
+            		WireInstance.ConnectionInfo srcInfo = new() { pin = sourcePin };
+            		WireInstance.ConnectionInfo tgtInfo = new() { pin = targetPin };
+            		WireInstance wire = new(srcInfo, tgtInfo, points, ActiveDevChip.Wires.Count);
+            		ActiveDevChip.AddWire(wire, false);
+            		loadedWires[i] = wire;
+        		}	
+    		}
+		}
+
+		
+
 		public void CancelEverything()
 		{
 			CancelMovingSelectedItems();
