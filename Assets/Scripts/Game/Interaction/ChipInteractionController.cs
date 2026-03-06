@@ -1000,16 +1000,8 @@ namespace DLS.Game
     		if (sourceDesc.SubChips == null || sourceDesc.SubChips.Length == 0) return;
 
     		// Calculate offset so imported contents appear to the right of the selected chip
-    		// Find bounding box center of the source chip's internal content
-			Vector2 contentMin = new Vector2(float.MaxValue, float.MaxValue);
-			Vector2 contentMax = new Vector2(float.MinValue, float.MinValue);
-			foreach (SubChipDescription subDesc in sourceDesc.SubChips)
-			{
-    			contentMin = Vector2.Min(contentMin, subDesc.Position);
-    			contentMax = Vector2.Max(contentMax, subDesc.Position);
-			}
-			Vector2 contentCenter = (contentMin + contentMax) / 2f;
-			Vector2 importOffset = sourceChip.Position + Vector2.right * (sourceChip.Size.x / 2f + 4f) - contentCenter;
+
+			Vector2 importOffset = Vector2.right * (sourceChip.Size.x / 2f + 4f);
 
     		// Build ID remap table to avoid conflicts
     		Dictionary<int, int> idRemap = new();
@@ -1058,7 +1050,7 @@ namespace DLS.Game
             		// Offset wire points
             		Vector2[] points = new Vector2[wireDesc.Points.Length];
             		for (int j = 0; j < points.Length; j++)
-                		points[j] = wireDesc.Points[j] + importOffset;
+                		points[j] = wireDesc.Points[j] - sourceChip.Position + importOffset;
 
             		WireInstance.ConnectionInfo srcInfo = new() { pin = sourcePin };
             		WireInstance.ConnectionInfo tgtInfo = new() { pin = targetPin };
