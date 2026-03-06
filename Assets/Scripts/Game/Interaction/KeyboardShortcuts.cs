@@ -26,6 +26,7 @@ namespace DLS.Game
 		public static bool ResetCameraShortcutTriggered => CtrlShortcutTriggered(KeyCode.R);
 		public static bool UndoShortcutTriggered => CtrlShortcutTriggered(KeyCode.Z);
 		public static bool RedoShortcutTriggered => CtrlShiftShortcutTriggered(KeyCode.Z);
+		public static bool ImportChipContentsShortcutTriggered => CtrlShortcutTriggered(KeyCode.I);
 
 		// ---- Single key shortcuts ----
 		public static bool CancelShortcutTriggered => InputHelper.IsKeyDownThisFrame(KeyCode.Escape);
