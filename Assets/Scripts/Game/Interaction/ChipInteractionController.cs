@@ -29,7 +29,7 @@ namespace DLS.Game
 		public WireInstance wireToEdit;
 		public int wireEditPointIndex = -1;
 		public bool wireEditCanInsertPoint;
-		 wireEditPointOld;
+		Vector2 wireEditPointOld;
 		public int wireEditPointSelectedIndex;
 		public bool isMovingWireEditPoint;
 
