@@ -29,7 +29,7 @@ namespace DLS.Game
 		public WireInstance wireToEdit;
 		public int wireEditPointIndex = -1;
 		public bool wireEditCanInsertPoint;
-		Vector2 wireEditPointOld;
+		 wireEditPointOld;
 		public int wireEditPointSelectedIndex;
 		public bool isMovingWireEditPoint;
 
@@ -1000,7 +1000,16 @@ namespace DLS.Game
     		if (sourceDesc.SubChips == null || sourceDesc.SubChips.Length == 0) return;
 
     		// Calculate offset so imported contents appear to the right of the selected chip
-    		Vector2 importOffset = sourceChip.Position + Vector2.right * (sourceChip.Size.x + 2f);
+    		// Find bounding box center of the source chip's internal content
+			Vector2 contentMin = new Vector2(float.MaxValue, float.MaxValue);
+			Vector2 contentMax = new Vector2(float.MinValue, float.MinValue);
+			foreach (SubChipDescription subDesc in sourceDesc.SubChips)
+			{
+    			contentMin = Vector2.Min(contentMin, subDesc.Position);
+    			contentMax = Vector2.Max(contentMax, subDesc.Position);
+			}
+			Vector2 contentCenter = (contentMin + contentMax) / 2f;
+			Vector2 importOffset = sourceChip.Position + Vector2.right * (sourceChip.Size.x / 2f + 4f) - contentCenter;
 
     		// Build ID remap table to avoid conflicts
     		Dictionary<int, int> idRemap = new();
